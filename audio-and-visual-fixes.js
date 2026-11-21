@@ -1,4 +1,9 @@
 (function(){
+// Each comic is one square in a 4-column by 3-row sprite sheet.
+// Keep its viewport square so that the complete panel is visible at all sizes.
+const sceneStyle=document.createElement('style');
+sceneStyle.textContent=`#visual:not(.free):not(.duel){aspect-ratio:1/1;height:auto!important;max-height:none!important;background-size:400% 300%!important;background-repeat:no-repeat!important;background-color:#bdeafa}`;
+document.head.appendChild(sceneStyle);
 // Switching tabs previously left an inline background-image:none on the scene div.
 const beforeFix=render;
 render=function(){beforeFix();const v=document.getElementById('visual');if(mode==='discover'){v.style.backgroundImage="url('./comic-scenes.png')";v.style.backgroundSize='400% 300%';v.style.backgroundRepeat='no-repeat';const col=i%4,row=Math.floor(i/4);v.style.backgroundPosition=`${col*100/3}% ${row*50}%`;}else if(mode==='compare'){v.style.backgroundImage='none'}};
