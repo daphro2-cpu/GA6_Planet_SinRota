@@ -1,0 +1,13 @@
+(function(){
+// Switching tabs previously left an inline background-image:none on the scene div.
+const beforeFix=render;
+render=function(){beforeFix();const v=document.getElementById('visual');if(mode==='discover'){v.style.backgroundImage="url('./comic-scenes.png')";v.style.backgroundSize='400% 300%';v.style.backgroundRepeat='no-repeat';const col=i%4,row=Math.floor(i/4);v.style.backgroundPosition=`${col*100/3}% ${row*50}%`;}else if(mode==='compare'){v.style.backgroundImage='none'}};
+render();
+// Always let the teacher stop narration, including in the middle of a paragraph.
+let listening=false,paused=false;
+function stopReading(){if('speechSynthesis'in window){speechSynthesis.cancel()}listening=false;paused=false;updateControls()}
+function updateControls(){const play=document.getElementById('readaloud');if(play)play.textContent=listening?(paused?'▶ Resume reading':'⏸ Pause reading'):'🔊 Read this page';const pa=document.getElementById('pauseaudio');if(pa)pa.textContent=paused?'▶ Resume':'⏸ Pause'}
+document.addEventListener('click',e=>{const play=e.target.closest('#readaloud');if(play){e.preventDefault();e.stopImmediatePropagation();if(!('speechSynthesis'in window))return;if(listening){if(paused){speechSynthesis.resume();paused=false}else{speechSynthesis.pause();paused=true}}else{speechSynthesis.cancel();const txt=document.querySelector('.read-text')?.textContent||'';if(!txt)return;let u=new SpeechSynthesisUtterance(txt);u.lang='en-US';u.rate=.88;u.onend=()=>{listening=false;paused=false;updateControls()};u.onerror=()=>{listening=false;paused=false;updateControls()};speechSynthesis.speak(u);listening=true;paused=false}updateControls();return}if(e.target.closest('#stopaudio')){stopReading();return}if(e.target.closest('#pauseaudio')){if(!listening)return;if(paused){speechSynthesis.resume();paused=false}else{speechSynthesis.pause();paused=true}updateControls();return}if(e.target.closest('#readnext,#readprev,#backvocab,.read-tabs button,.nav button,#contextsay'))stopReading()},true);
+const stopBtn=document.createElement('button');stopBtn.id='stopaudio';stopBtn.className='audio-stop';stopBtn.textContent='■ Stop reading';const pauseBtn=document.createElement('button');pauseBtn.id='pauseaudio';pauseBtn.className='audio-stop';pauseBtn.textContent='⏸ Pause';const group=document.createElement('div');group.className='audio-toolbar';group.append(pauseBtn,stopBtn);document.querySelector('#reader').prepend(group);
+const observer=new MutationObserver(()=>{if(!document.getElementById('stopaudio')){document.querySelector('#reader')?.prepend(group);updateControls()}});observer.observe(document.getElementById('reader'),{childList:true});
+})();
