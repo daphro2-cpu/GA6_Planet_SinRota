@@ -4,19 +4,19 @@
   style.textContent = `
     #ink-layer{position:fixed;inset:0;width:100vw;height:100vh;z-index:9998;pointer-events:none;touch-action:none}
     #ink-layer.drawing{pointer-events:auto;cursor:crosshair}
-    #ink-tools{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;gap:5px;align-items:center;flex-wrap:wrap;justify-content:center;max-width:calc(100vw - 20px);padding:8px;background:#fffdf6;border:3px solid #243044;border-radius:18px;box-shadow:4px 5px 0 #243044;font:700 14px system-ui,sans-serif}
-    #ink-tools button{border:2px solid #243044!important;background:#fff!important;color:#243044!important;border-radius:10px!important;padding:8px 11px!important;font:inherit!important;min-height:40px;cursor:pointer}
+    #ink-tools{position:fixed;top:50%;left:8px;transform:translateY(-50%);z-index:9999;display:flex;flex-direction:column;gap:5px;align-items:stretch;justify-content:center;width:100px;padding:7px;background:#fffdf6;border:3px solid #243044;border-radius:18px;box-shadow:4px 5px 0 #243044;font:700 12px system-ui,sans-serif}
+    #ink-tools button{border:2px solid #243044!important;background:#fff!important;color:#243044!important;border-radius:10px!important;padding:8px 4px!important;font:inherit!important;min-height:42px;cursor:pointer}
     #ink-tools button.active{background:#f8d755!important}
     #ink-tools button.ink-highlight.active{background:#ffe879!important}
     #ink-tools .ink-close{background:#dff3ff!important}
-    #ink-tools .ink-label{font-size:13px;margin:0 3px;white-space:nowrap}
-    @media(max-width:600px){#ink-tools{bottom:8px;padding:5px;gap:3px}#ink-tools button{padding:6px 7px!important;font-size:12px!important;min-height:36px}#ink-tools .ink-label{display:none}}
+    #ink-tools .ink-label{font-size:11px;line-height:1.2;text-align:center}
+    @media(max-width:600px){#ink-tools{left:3px;width:51px;padding:4px;gap:4px;border-radius:12px}#ink-tools button{padding:5px 2px!important;font-size:19px!important;min-height:39px}#ink-tools .ink-label,#ink-tools .ink-text{display:none}}
   `;
   document.head.append(style);
   const canvas = document.createElement('canvas'); canvas.id = 'ink-layer';
   document.body.append(canvas);
   const bar = document.createElement('div'); bar.id='ink-tools'; bar.setAttribute('role','toolbar'); bar.setAttribute('aria-label','Classroom drawing tools');
-  bar.innerHTML = '<span class="ink-label">✏️ Classroom board</span><button data-tool="interact" class="active ink-close" title="Use the lesson normally">👆 Interact</button><button data-tool="pen">✏️ Pen</button><button data-tool="highlight" class="ink-highlight">🟨 Highlight</button><button data-tool="erase">◻️ Erase</button><button data-action="undo">↶ Undo</button><button data-action="clear">🗑 Clear</button>';
+  bar.innerHTML = '<span class="ink-label">✏️ Classroom board</span><button data-tool="interact" class="active ink-close" title="Interact with lesson" aria-label="Interact with lesson">👆 <span class="ink-text">Interact</span></button><button data-tool="pen" title="Pen" aria-label="Pen">✏️ <span class="ink-text">Pen</span></button><button data-tool="highlight" class="ink-highlight" title="Highlight" aria-label="Highlight">🟨 <span class="ink-text">Highlight</span></button><button data-tool="erase" title="Eraser" aria-label="Eraser">◻️ <span class="ink-text">Erase</span></button><button data-action="undo" title="Undo" aria-label="Undo">↶ <span class="ink-text">Undo</span></button><button data-action="clear" title="Clear" aria-label="Clear">🗑 <span class="ink-text">Clear</span></button>';
   document.body.append(bar);
   const ctx=canvas.getContext('2d');
   let tool='interact', strokes=[], active=null, pixelRatio=1;
